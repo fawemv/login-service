@@ -69,6 +69,18 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 
+		<!--Swagger2.9.2和spring boot 2.6.4有矛盾-->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.10.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.10.5</version>
+		</dependency>
+
 
         <!--验证码生成-->
         <dependency>
@@ -90,17 +102,7 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
-		<!--Swagger2.9.2和spring boot 2.6.4有矛盾-->
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>2.10.5</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>2.10.5</version>
-		</dependency>
+
     </dependencies>
 
 	<build>
