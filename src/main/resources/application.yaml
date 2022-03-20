@@ -20,7 +20,7 @@ spring:
 #      discovery:
 #        cluster-name: HZ
 mybatis-plus:
-  mapper-locations: classpath*:/mapper/**Mapper.xml
+  mapper-locations: classpath*:/mapper/xml/**Mapper.xml
   # 开启mybatis plus的日志打印
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

@@ -15,7 +15,6 @@ com\example\loginservice\utils\Result.class
 com\example\loginservice\controller\UserController.class
 com\example\loginservice\controller\UtilsController.class
 com\example\loginservice\service\IUserService.class
-com\example\loginservice\config\SwaggerConfig.class
 com\example\loginservice\config\RedisConfig.class
 com\example\loginservice\security\LoginFailureHandler.class
 com\example\loginservice\service\KaptchaService.class
