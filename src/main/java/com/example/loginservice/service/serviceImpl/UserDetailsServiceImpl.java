@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        SysUser sysUser = sysUserService.getByUsername(username);
+       SysUser sysUser = sysUserService.getByUsername(username);
         if (sysUser == null) {
             throw new UsernameNotFoundException("用户名或密码不正确");
         }

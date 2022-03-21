@@ -27,4 +27,5 @@ public class LoginController {
         Result succ = result.succ(kaptcha);
         return succ;
     }
+
 }

@@ -8,6 +8,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Date;
 
 @Data
@@ -19,19 +20,26 @@ public class JwtUtils {
     private String secret;
     private String header;
 
+    @Resource
+    private RedisUtil redisUtil;
+
+
     // 生成jwt
     public String generateToken(String username) {
 
         Date nowDate = new Date();
         Date expireDate = new Date(nowDate.getTime() + 1000 * expire);
-
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setHeaderParam("typ", "JWT")
                 .setSubject(username)
                 .setIssuedAt(nowDate)
                 .setExpiration(expireDate)// 7天過期
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
+        // 添加到redis缓存中set : token
+        redisUtil.sSet("token", token);
+
+        return token;
     }
 
     // 解析jwt
