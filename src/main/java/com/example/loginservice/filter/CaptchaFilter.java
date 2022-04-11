@@ -47,12 +47,13 @@ public class CaptchaFilter extends OncePerRequestFilter {
         String code = request.getParameter("captcha");
         String token = request.getParameter("token");
         if (StringUtils.isBlank(code) || StringUtils.isBlank(token)) {
-            redisUtil.hdel(Const.captcha_KEY, token);
-           throw new CaptchaException("验证码不能为空");
+
+            redisUtil.del(token);
+            throw new CaptchaException("验证码不能为空");
         }
-        if (!code.equals(redisUtil.hget(Const.captcha_KEY, token))) {
-            redisUtil.hdel(Const.captcha_KEY, token);
-           throw new CaptchaException("验证码不正确");
+        if (!code.equals(redisUtil.get(token))) {
+            redisUtil.del(token);
+            throw new CaptchaException("验证码不正确");
         }
         // 一次性使用
     }

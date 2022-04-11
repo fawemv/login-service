@@ -17,6 +17,7 @@ public class UtilsController {
     @Resource
     private RedisUtil redisUtil;
 
+    //@PreAuthorize("hasRole('admin')")
     @GetMapping("/sumRequest")
     public Result sumRequest() {
         System.out.println("zhixing");

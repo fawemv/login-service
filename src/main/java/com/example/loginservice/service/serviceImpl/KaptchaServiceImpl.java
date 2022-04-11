@@ -1,6 +1,7 @@
 package com.example.loginservice.service.serviceImpl;
 
 import com.example.loginservice.service.KaptchaService;
+import com.example.loginservice.utils.RedisUtil;
 import com.google.code.kaptcha.Producer;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,9 @@ public class KaptchaServiceImpl implements KaptchaService {
     @Resource
     private Producer producer;
 
+
     @Resource
-    private RedisTemplate redisTemplate;
+    private RedisUtil redisUtil;
 
 
     @Override
@@ -44,7 +46,8 @@ public class KaptchaServiceImpl implements KaptchaService {
         String base64Img = str + encoder.encode(outputStream.toByteArray());
 
         // 将验证码存入redis
-        redisTemplate.opsForHash().put("captcha", key, code);
+        //redisTemplate.opsForHash().put("captcha", key, code);
+        redisUtil.set(key, code, 2 * 60);
 
         Map<String, Object> map = new HashMap<>();
         map.put("image", base64Img);

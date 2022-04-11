@@ -33,8 +33,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUser sysUser = sysUserMapper.getById(userId.intValue());
         String authority = sysUser.getRole();
         // 获取用户权限
+
         // 先从redis中获取
-        return authority;
+
+        return "ROLE_" + authority;
     }
 
     //      后面的方法是用于清除用户的权限信息的，确保权限实时更新
