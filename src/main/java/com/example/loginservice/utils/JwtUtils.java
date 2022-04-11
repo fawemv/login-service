@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -23,6 +24,9 @@ public class JwtUtils {
     @Resource
     private RedisUtil redisUtil;
 
+    @Resource
+    private RedisTemplate redisTemplate;
+
 
     // 生成jwt
     public String generateToken(String username) {
@@ -36,8 +40,10 @@ public class JwtUtils {
                 .setExpiration(expireDate)// 7天過期
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
-        // 添加到redis缓存中set : token
-        redisUtil.sSet("token", token);
+        // 添加到redis缓存中map : token , value就是用户的唯一标识符，便于后面使用
+        //redisUtil.sSet("token", token);
+        redisTemplate.opsForHash().put("token", token, "userId");
+
 
         return token;
     }
