@@ -1,10 +1,10 @@
 package com.example.loginservice.filter;
 
 import cn.hutool.core.util.StrUtil;
-import com.example.loginservice.pojo.SysUser;
-import com.example.loginservice.service.SysUserService;
-import com.example.loginservice.service.serviceImpl.SysUserServiceImpl;
+import com.example.loginservice.service.serviceImpl.AccountUser;
 import com.example.loginservice.service.serviceImpl.UserDetailsServiceImpl;
+import com.example.loginservice.servicecode.entity.Sysuser;
+import com.example.loginservice.servicecode.service.ISysuserService;
 import com.example.loginservice.utils.JwtUtils;
 import com.example.loginservice.utils.RedisUtil;
 import io.jsonwebtoken.Claims;
@@ -13,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -32,7 +34,8 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
     @Autowired
     RedisUtil redisUtil;
     @Autowired
-    SysUserService sysUserService;
+    ISysuserService sysUserService;
+
 
     @Resource
     UserDetailsServiceImpl userDetailsServiceImpl;
@@ -59,14 +62,21 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
         String username = claim.getSubject();
         log.info("用户-{}，正在登陆！", username);
 
-        // 获取userid
-        SysUser user = sysUserService.getByUsername(username);
-
         // 权限
+        String userAuthority = null;
+        userAuthority = (String) redisUtil.get(jwt);
+        if (userAuthority == null) {
+            userAuthority = userDetailsServiceImpl.getUserAuthority(username);
+            if (userAuthority != null) {
+                // 权限存入redis缓存 , 缓存时间小一点，还可以防止权限变更是吧
+                redisUtil.set(jwt, userAuthority, 60 * 30);
+            }
+        }
 
 
+        // 根据token从缓存中获取权限
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
-                = new UsernamePasswordAuthenticationToken(username, null, userDetailsServiceImpl.getUserAuthority(user.getId()));
+                = new UsernamePasswordAuthenticationToken(username, null, AuthorityUtils.commaSeparatedStringToAuthorityList(userAuthority));
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         chain.doFilter(request, response);
     }

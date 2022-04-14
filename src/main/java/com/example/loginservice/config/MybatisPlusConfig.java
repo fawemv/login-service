@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@MapperScan("com.example.loginservice.mapper")
+@MapperScan("com.example.loginservice.servicecode.mapper")
+//@MapperScan("com.example.loginservice.mapper")
 public class MybatisPlusConfig {
 
     @Bean

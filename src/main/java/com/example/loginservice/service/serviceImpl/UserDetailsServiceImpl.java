@@ -1,7 +1,11 @@
 package com.example.loginservice.service.serviceImpl;
 
-import com.example.loginservice.pojo.SysUser;
-import com.example.loginservice.service.SysUserService;
+
+import com.example.loginservice.servicecode.entity.Student;
+import com.example.loginservice.servicecode.entity.Sysuser;
+import com.example.loginservice.servicecode.service.IStudentService;
+import com.example.loginservice.servicecode.service.ISysuserService;
+import io.swagger.models.auth.In;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,28 +20,72 @@ import java.util.List;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Resource
-    SysUserService sysUserService;
+    ISysuserService sysUserService;
+
+    @Resource
+    IStudentService iStudentService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-       SysUser sysUser = sysUserService.getByUsername(username);
+        // 权限
+        List<GrantedAuthority> authority = null;
+        Sysuser sysUser = sysUserService.getByUsername(username);
+
         if (sysUser == null) {
-            throw new UsernameNotFoundException("用户名或密码不正确");
+            Long aLong = null;
+            try {
+                aLong = new Long(username);
+            } catch (Exception e) {
+                System.out.println("{}不是一个学生账号");
+                throw new UsernameNotFoundException("用户名或密码不正确");
+            }
+            Student stu = iStudentService.getById(aLong);
+
+            if (stu == null)
+                throw new UsernameNotFoundException("用户名或密码不正确");
+
+            authority = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_student");
+            return new AccountUser(stu.getsId(), stu.getsId() + "", stu.getPassword(), authority);
+
+        } else {
+            authority = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_admin");
         }
-        return new AccountUser(sysUser.getId(), sysUser.getUsername(), sysUser.getPassword(), getUserAuthority(sysUser.getId()));
+
+        return new AccountUser(sysUser.getId(), sysUser.getUsername(), sysUser.getPassword(), authority);
     }
 
     /**
      * 获取用户权限信息（角色、菜单权限）
-     * @param userId
+     *
+     * @param
      * @return
      */
-    public List<GrantedAuthority> getUserAuthority(Long userId){
+    public String getUserAuthority(String username) {
 
-        // 角色(ROLE_admin)、菜单操作权限 sys:user:list
-        String authority = sysUserService.getUserAuthorityInfo(userId);  // ROLE_admin,ROLE_normal,sys:user:list,....
+        // 权限
+        String authority = null;
+        Sysuser sysUser = sysUserService.getByUsername(username);
 
-        return AuthorityUtils.commaSeparatedStringToAuthorityList(authority);
+        if (sysUser == null) {
+            Long aLong = null;
+            try {
+                aLong = new Long(username);
+            } catch (Exception e) {
+                System.out.println("{}不是一个学生账号");
+
+            }
+            Student stu = iStudentService.getById(aLong);
+
+            if (stu == null)
+                return null;
+            authority = "ROLE_student";
+            return authority;
+
+        } else {
+            authority = "ROLE_admin";
+        }
+
+        return authority;
     }
 }
