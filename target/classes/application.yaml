@@ -10,7 +10,7 @@ spring:
   redis:
     host: 124.221.133.149
     port: 6379
-    password: Rkgagvq15968423
+    password: Rkgagvq@Lang123456
 #security的默认密码
 #  security:
 #    user:

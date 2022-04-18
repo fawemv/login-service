@@ -5,10 +5,13 @@
         SELECT *
         FROM `sysuser`
         where username = #{username}
+          and is_delete = 0
     </select>
     <select id="getById" resultType="com.example.loginservice.servicecode.entity.Sysuser" parameterType="long">
         SELECT *
         FROM `sysuser`
         where id = #{userId}
+          and is_delete = 0
     </select>
+
 </mapper>

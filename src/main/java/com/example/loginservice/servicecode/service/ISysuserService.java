@@ -14,5 +14,4 @@ import com.example.loginservice.servicecode.entity.Sysuser;
 public interface ISysuserService extends IService<Sysuser> {
     Sysuser getByUsername(String username);
 
-    String getUserAuthorityInfo(Long userId);
 }

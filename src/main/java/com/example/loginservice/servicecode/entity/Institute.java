@@ -1,7 +1,6 @@
 package com.example.loginservice.servicecode.entity;
 
 import java.io.Serializable;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -30,7 +29,6 @@ public class Institute implements Serializable {
     public void setInstituteId(Integer instituteId) {
         this.instituteId = instituteId;
     }
-
     public String getInstituteName() {
         return instituteName;
     }

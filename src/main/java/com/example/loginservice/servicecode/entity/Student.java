@@ -54,7 +54,6 @@ public class Student implements Serializable {
     public void setsId(Long sId) {
         this.sId = sId;
     }
-
     public String getPassword() {
         return password;
     }
@@ -62,7 +61,6 @@ public class Student implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-
     public String getName() {
         return name;
     }
@@ -70,7 +68,6 @@ public class Student implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
     public String getSex() {
         return sex;
     }
@@ -78,7 +75,6 @@ public class Student implements Serializable {
     public void setSex(String sex) {
         this.sex = sex;
     }
-
     public Integer getInstituteId() {
         return instituteId;
     }
@@ -86,7 +82,6 @@ public class Student implements Serializable {
     public void setInstituteId(Integer instituteId) {
         this.instituteId = instituteId;
     }
-
     public Integer getRoomId() {
         return roomId;
     }
@@ -94,7 +89,6 @@ public class Student implements Serializable {
     public void setRoomId(Integer roomId) {
         this.roomId = roomId;
     }
-
     public Integer getGrade() {
         return grade;
     }
@@ -102,7 +96,6 @@ public class Student implements Serializable {
     public void setGrade(Integer grade) {
         this.grade = grade;
     }
-
     public Integer getBed() {
         return bed;
     }
@@ -110,7 +103,6 @@ public class Student implements Serializable {
     public void setBed(Integer bed) {
         this.bed = bed;
     }
-
     public Integer getIsDelete() {
         return isDelete;
     }

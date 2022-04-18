@@ -32,19 +32,5 @@ public class SysuserServiceImpl extends ServiceImpl<SysuserMapper, Sysuser> impl
         return sysUser;
     }
 
-    @Override
-    public String getUserAuthorityInfo(Long userId) {
-        // 接口分为三种权限：无需权限  admin权限  student权限
-        // 获取用户角色
-        // 先从redis中获取
-
-        // 数据库获取
-        Sysuser sysUser = sysUserMapper.getById(userId.intValue());
-        String authority = sysUser.getRole();
-
-        // 这里的角色分为两种:最后返回的结果为；1.  ROLE_admin  2.  ROLE_student
-
-        return "ROLE_" + authority;
-    }
 
 }

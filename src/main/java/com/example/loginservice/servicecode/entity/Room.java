@@ -1,7 +1,6 @@
 package com.example.loginservice.servicecode.entity;
 
 import java.io.Serializable;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -36,7 +35,6 @@ public class Room implements Serializable {
     public void setRoomId(Integer roomId) {
         this.roomId = roomId;
     }
-
     public Integer getBuildingId() {
         return buildingId;
     }
@@ -44,7 +42,6 @@ public class Room implements Serializable {
     public void setBuildingId(Integer buildingId) {
         this.buildingId = buildingId;
     }
-
     public Integer getOccupancy() {
         return occupancy;
     }
@@ -52,7 +49,6 @@ public class Room implements Serializable {
     public void setOccupancy(Integer occupancy) {
         this.occupancy = occupancy;
     }
-
     public Integer getRoomType() {
         return roomType;
     }

@@ -60,7 +60,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
             throw new JwtException("token已过期");
         }
         String username = claim.getSubject();
-        log.info("用户-{}，正在登陆！", username);
+        log.info("用户-{}，正在访问:" + request.getRequestURL(), username);
 
         // 权限
         String userAuthority = null;

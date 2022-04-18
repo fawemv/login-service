@@ -2,7 +2,6 @@ package com.example.loginservice.servicecode.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -44,7 +43,6 @@ public class Announcement implements Serializable {
     public void setaId(Integer aId) {
         this.aId = aId;
     }
-
     public String getTitile() {
         return titile;
     }
@@ -52,7 +50,6 @@ public class Announcement implements Serializable {
     public void setTitile(String titile) {
         this.titile = titile;
     }
-
     public String getContent() {
         return content;
     }
@@ -60,7 +57,6 @@ public class Announcement implements Serializable {
     public void setContent(String content) {
         this.content = content;
     }
-
     public Long getSysId() {
         return sysId;
     }
@@ -68,7 +64,6 @@ public class Announcement implements Serializable {
     public void setSysId(Long sysId) {
         this.sysId = sysId;
     }
-
     public Integer getBuildingId() {
         return buildingId;
     }
@@ -76,7 +71,6 @@ public class Announcement implements Serializable {
     public void setBuildingId(Integer buildingId) {
         this.buildingId = buildingId;
     }
-
     public LocalDateTime getCreatTime() {
         return creatTime;
     }
@@ -84,7 +78,6 @@ public class Announcement implements Serializable {
     public void setCreatTime(LocalDateTime creatTime) {
         this.creatTime = creatTime;
     }
-
     public LocalDateTime getUpdateTime() {
         return updateTime;
     }

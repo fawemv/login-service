@@ -2,6 +2,7 @@ package com.example.loginservice.servicecode.entity;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -18,6 +19,7 @@ public class Building implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @TableId
     private Integer buildingId;
 
     @ApiModelProperty("宿舍名称")
@@ -45,7 +47,6 @@ public class Building implements Serializable {
     public void setBuildingId(Integer buildingId) {
         this.buildingId = buildingId;
     }
-
     public String getName() {
         return name;
     }
@@ -53,7 +54,6 @@ public class Building implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
     public Integer getFloor() {
         return floor;
     }
@@ -61,7 +61,6 @@ public class Building implements Serializable {
     public void setFloor(Integer floor) {
         this.floor = floor;
     }
-
     public String getDescription() {
         return description;
     }
@@ -69,7 +68,6 @@ public class Building implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-
     public Float getPrice() {
         return price;
     }
@@ -77,7 +75,6 @@ public class Building implements Serializable {
     public void setPrice(Float price) {
         this.price = price;
     }
-
     public String getType() {
         return type;
     }
@@ -85,7 +82,6 @@ public class Building implements Serializable {
     public void setType(String type) {
         this.type = type;
     }
-
     public Integer getRoomType() {
         return roomType;
     }
