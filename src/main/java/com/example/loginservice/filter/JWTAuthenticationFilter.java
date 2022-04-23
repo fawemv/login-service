@@ -65,7 +65,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
         // 权限
         String userAuthority = null;
         userAuthority = (String) redisUtil.get(jwt);
-        if (userAuthority == null) {
+        if (userAuthority == null || "".equals(userAuthority)) {
             userAuthority = userDetailsServiceImpl.getUserAuthority(username);
             if (userAuthority != null) {
                 // 权限存入redis缓存 , 缓存时间小一点，还可以防止权限变更是吧

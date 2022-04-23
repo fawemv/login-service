@@ -2,4 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.loginservice.servicecode.mapper.StudentMapper">
 
+    <select id="selectYesRegisterInfo" resultType="com.example.loginservice.servicecode.entity.Student"
+            parameterType="string">
+        select * from student where is_delete = 0 and room_id is not null
+        <if test="likeData != null">
+            and s_id like #{likeData}
+        </if>
+    </select>
+
+    <select id="selectNoRegisterInfo" resultType="com.example.loginservice.servicecode.entity.Student"
+            parameterType="string">
+        select * from student where is_delete = 0 and room_id is null
+        <if test="likeData != null">
+            and s_id like #{likeData}
+        </if>
+    </select>
 </mapper>

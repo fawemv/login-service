@@ -36,7 +36,7 @@ public class Sysuser implements Serializable {
     private Integer age;
 
     @ApiModelProperty("管理的宿舍楼号")
-    private Long buildingId;
+    private Integer buildingId;
 
     @ApiModelProperty("联系电话")
     private String phone;
@@ -96,11 +96,11 @@ public class Sysuser implements Serializable {
         this.age = age;
     }
 
-    public Long getBuildingId() {
+    public Integer getBuildingId() {
         return buildingId;
     }
 
-    public void setBuildingId(Long buildingId) {
+    public void setBuildingId(Integer buildingId) {
         this.buildingId = buildingId;
     }
 

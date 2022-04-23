@@ -10,6 +10,7 @@ public class Result implements Serializable {
     private int code; // 200是正常，非200表示异常
     private String msg;
     private Object data;
+    private Long allDataSize;
 
     public static Result succ(Object data) {
         return succ(200, "操作成功", data);
@@ -20,6 +21,15 @@ public class Result implements Serializable {
         r.setCode(code);
         r.setMsg(msg);
         r.setData(data);
+        return r;
+    }
+
+    public static Result succ(int code, String msg, Object data, Long allDataSize) {
+        Result r = new Result();
+        r.setCode(code);
+        r.setMsg(msg);
+        r.setData(data);
+        r.setAllDataSize(allDataSize);
         return r;
     }
 

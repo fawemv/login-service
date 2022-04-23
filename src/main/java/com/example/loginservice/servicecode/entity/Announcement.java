@@ -2,8 +2,14 @@ package com.example.loginservice.servicecode.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * <p>
@@ -13,15 +19,18 @@ import io.swagger.annotations.ApiModelProperty;
  * @author 陈浪
  * @since 2022-04-14
  */
+@Data
 @ApiModel(value = "Announcement对象", description = "")
 public class Announcement implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    //  主键自增策略， 明明一开始都能用，现在就不能用了，真是奇怪
+    @TableId(type = IdType.AUTO)
     @ApiModelProperty("公告编号")
     private Integer aId;
 
-    private String titile;
+    private String title;
 
     @ApiModelProperty("内容")
     private String content;
@@ -31,71 +40,18 @@ public class Announcement implements Serializable {
     private Integer buildingId;
 
     @ApiModelProperty("创建时间")
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime creatTime;
 
     @ApiModelProperty("修改时间")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
-    public Integer getaId() {
+    Integer getaId() {
         return aId;
     }
 
-    public void setaId(Integer aId) {
+    void setaId(Integer aId) {
         this.aId = aId;
-    }
-    public String getTitile() {
-        return titile;
-    }
-
-    public void setTitile(String titile) {
-        this.titile = titile;
-    }
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-    public Long getSysId() {
-        return sysId;
-    }
-
-    public void setSysId(Long sysId) {
-        this.sysId = sysId;
-    }
-    public Integer getBuildingId() {
-        return buildingId;
-    }
-
-    public void setBuildingId(Integer buildingId) {
-        this.buildingId = buildingId;
-    }
-    public LocalDateTime getCreatTime() {
-        return creatTime;
-    }
-
-    public void setCreatTime(LocalDateTime creatTime) {
-        this.creatTime = creatTime;
-    }
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    @Override
-    public String toString() {
-        return "Announcement{" +
-                "aId=" + aId +
-                ", titile=" + titile +
-                ", content=" + content +
-                ", sysId=" + sysId +
-                ", buildingId=" + buildingId +
-                ", creatTime=" + creatTime +
-                ", updateTime=" + updateTime +
-                "}";
     }
 }
