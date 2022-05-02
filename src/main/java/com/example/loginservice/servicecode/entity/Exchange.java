@@ -2,8 +2,15 @@ package com.example.loginservice.servicecode.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * <p>
@@ -11,32 +18,38 @@ import io.swagger.annotations.ApiModelProperty;
  * </p>
  *
  * @author 陈浪
- * @since 2022-04-14
+ * @since 2022-04-27
  */
+@Data
 @ApiModel(value = "Exchange对象", description = "")
 public class Exchange implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("申请表id")
+    @TableId(value = "exchange_id", type = IdType.AUTO)
     private Integer exchangeId;
 
     @ApiModelProperty("学生id")
     private Long sId;
 
+    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty("申请时间")
-    private LocalDate creatTime;
+    private LocalDateTime creatTime;
 
     @ApiModelProperty("状态")
     private String state;
 
-    public Integer getExchangeId() {
-        return exchangeId;
-    }
 
-    public void setExchangeId(Integer exchangeId) {
-        this.exchangeId = exchangeId;
-    }
+    @ApiModelProperty("修改时间，处理时间")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
+
+    @ApiModelProperty("原来的旧寝室")
+    private Integer oldRoomId;
+
+    private String description;
+
     public Long getsId() {
         return sId;
     }
@@ -44,28 +57,6 @@ public class Exchange implements Serializable {
     public void setsId(Long sId) {
         this.sId = sId;
     }
-    public LocalDate getCreatTime() {
-        return creatTime;
-    }
 
-    public void setCreatTime(LocalDate creatTime) {
-        this.creatTime = creatTime;
-    }
-    public String getState() {
-        return state;
-    }
 
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    @Override
-    public String toString() {
-        return "Exchange{" +
-                "exchangeId=" + exchangeId +
-                ", sId=" + sId +
-                ", creatTime=" + creatTime +
-                ", state=" + state +
-                "}";
-    }
 }

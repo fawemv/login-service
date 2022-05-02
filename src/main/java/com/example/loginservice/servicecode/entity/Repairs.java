@@ -1,8 +1,13 @@
 package com.example.loginservice.servicecode.entity;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * <p>
@@ -12,6 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author 陈浪
  * @since 2022-04-14
  */
+@Data
 @ApiModel(value = "Repairs对象", description = "")
 public class Repairs implements Serializable {
 
@@ -29,50 +35,23 @@ public class Repairs implements Serializable {
 
     private String state;
 
-    public Integer getRepairsId() {
-        return repairsId;
-    }
+    @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty("申请时间")
+    private LocalDateTime creatTime;
 
-    public void setRepairsId(Integer repairsId) {
-        this.repairsId = repairsId;
-    }
-    public String getRepairsContent() {
-        return repairsContent;
-    }
 
-    public void setRepairsContent(String repairsContent) {
-        this.repairsContent = repairsContent;
-    }
-    public String getRepairsImage() {
-        return repairsImage;
-    }
+    @ApiModelProperty("修改时间，处理时间")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 
-    public void setRepairsImage(String repairsImage) {
-        this.repairsImage = repairsImage;
-    }
-    public Long getsId() {
-        return sId;
-    }
 
     public void setsId(Long sId) {
         this.sId = sId;
     }
+
     public String getState() {
         return state;
     }
 
-    public void setState(String state) {
-        this.state = state;
-    }
 
-    @Override
-    public String toString() {
-        return "Repairs{" +
-                "repairsId=" + repairsId +
-                ", repairsContent=" + repairsContent +
-                ", repairsImage=" + repairsImage +
-                ", sId=" + sId +
-                ", state=" + state +
-                "}";
-    }
 }

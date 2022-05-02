@@ -56,7 +56,7 @@ public class RoomController {
     }
 
 
-    // 修改宿舍楼信息
+    // 修改信息
     @PreAuthorize("hasRole('admin')")
     @PostMapping("/updateRoomInfo")
     public Result updateRoomInfo(@RequestBody Room data) {
@@ -114,7 +114,7 @@ public class RoomController {
         return result;
     }
 
-    // 添加宿舍楼信息
+    // 添加信息
     @PreAuthorize("hasRole('admin')")
     @PostMapping("/addRoomInfo")
     public Result addRoomInfo(@RequestBody Room data) {
@@ -127,6 +127,22 @@ public class RoomController {
         } finally {
             return result;
         }
+    }
+
+    // 根据id查询
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/selectRoomById/{roomId}")
+    public Result selectRoomById(@PathVariable("roomId") Integer roomId) {
+        Result result = null;
+
+        Room room = iRoomService.getById(roomId);
+        if (room != null) {
+            result = Result.succ(null);
+        } else {
+            result = Result.fail("没有这个房间");
+        }
+
+        return result;
     }
 }
 

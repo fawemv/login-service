@@ -54,7 +54,7 @@ public class AnnouncementController {
         return result;
     }
 
-    //查询满足id的宿舍楼信息
+    //查询满足id
     // 可以扩展为查询满足条件的宿舍楼号
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/selectAnnouncementInfo/{announcementId}")
@@ -101,7 +101,7 @@ public class AnnouncementController {
 
     //  懒加载，每次请求，返回四条数据
     // 管理员需要的数据有: 公告标题，内容，发布人，宿舍楼，发布时间
-    @PreAuthorize("hasRole('admin')")
+    //@PreAuthorize("hasRole('admin')")
     @GetMapping("/pageAnnouncementInfo/{lens}")
     public Result pageAnnouncementInfo(@PathVariable("lens") Integer lens) {
         Result result = null;

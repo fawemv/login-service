@@ -21,5 +21,6 @@ public interface StudentMapper extends BaseMapper<Student> {
 
     IPage<Student> selectYesRegisterInfo(Page page, @Param("likeData") String likeData);
 
+
     IPage<Student> selectNoRegisterInfo(Page page, @Param("likeData") String likeData);
 }

@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.example.loginservice.LoginServiceApplicationTests
--------------------------------------------------------------------------------
-Tests run: 7, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 17.061 s <<< FAILURE! - in com.example.loginservice.LoginServiceApplicationTests
-test9  Time elapsed: 0.003 s  <<< ERROR!
-java.lang.UnsupportedOperationException
-	at com.example.loginservice.LoginServiceApplicationTests.test9(LoginServiceApplicationTests.java:132)
-

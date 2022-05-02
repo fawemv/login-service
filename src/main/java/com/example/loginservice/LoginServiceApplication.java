@@ -11,10 +11,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class LoginServiceApplication {
 
 	public static void main(String[] args) {
-		ConfigurableApplicationContext run = SpringApplication.run(LoginServiceApplication.class, args);
-		for (String beanDefinitionName : run.getBeanDefinitionNames()) {
+        ConfigurableApplicationContext run = SpringApplication.run(LoginServiceApplication.class, args);
+		/*for (String beanDefinitionName : run.getBeanDefinitionNames()) {
 			System.out.println(beanDefinitionName);
-		}
-	}
+		}*/
+    }
 
 }

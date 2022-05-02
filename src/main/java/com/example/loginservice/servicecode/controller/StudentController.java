@@ -9,14 +9,18 @@ package com.example.loginservice.servicecode.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.loginservice.servicecode.entity.Exchange;
 import com.example.loginservice.servicecode.entity.Student;
+import com.example.loginservice.servicecode.service.IExchangeService;
 import com.example.loginservice.servicecode.service.IStudentService;
+import com.example.loginservice.utils.JwtUtils;
 import com.example.loginservice.utils.Result;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.management.Query;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +35,14 @@ public class StudentController {
     @Resource
     private IStudentService iStudentService;
 
+    @Resource
+    private IExchangeService iExchangeService;
 
-    //  获取房间信息分页 附带模糊查询
+    @Resource
+    private JwtUtils jwtUtils;
+
+
+    //  获取信息分页 附带模糊查询
     //  在房间页面数据量较大，请求数据时，分页 默认 /1/20/0 ,   这个0考虑到可能是通过房间id前缀模糊查询， 0则代表没有查询条件
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/getStudent/{page}/{pageSize}")
@@ -60,7 +70,7 @@ public class StudentController {
     }
 
 
-    // 修改宿舍楼信息
+    // 修改信息
     @PreAuthorize("hasRole('admin')")
     @PostMapping("/updateStudentInfo")
     public Result updateStudentInfo(@RequestBody Student data) {
@@ -76,7 +86,7 @@ public class StudentController {
         }
     }
 
-    // 删除宿舍楼信息
+    // 删除信息
     @PreAuthorize("hasRole('admin')")
     @PostMapping("/deleteStudentInfo")
     public Result deleteStudentInfo(@RequestBody String studentId) {
@@ -117,7 +127,7 @@ public class StudentController {
         return result;
     }
 
-    // 添加宿舍楼信息
+    // 添加信息
     @PreAuthorize("hasRole('admin')")
     @PostMapping("/addStudentInfo")
     public Result addStudentInfo(@RequestBody Student data) {
@@ -159,6 +169,49 @@ public class StudentController {
             result = Result.succ(200, "查询成功", studentIPage);
         } catch (Exception e) {
             result = Result.succ(404, "查询失败", null);
+        } finally {
+            return result;
+        }
+    }
+
+    // 根据学生id查询学生的信息
+    @GetMapping("/selectById")
+    public Result selectById(HttpServletRequest request) {
+        Result result = null;
+        Student data = null;
+
+        String studentIdStr = jwtUtils.parseTokenToUsername(request.getHeader(jwtUtils.getHeader()));
+        data = iStudentService.getById(studentIdStr);
+
+        if (data != null) {
+            result = Result.succ(200, "查询成功", data);
+        } else {
+            result = Result.succ(404, "没有满足条件的数据", null);
+        }
+
+        return result;
+    }
+
+    // 修改学生换寝室的申请，
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/updateExchangeInfo/{sId}/{exchangeId}/{newRoomId}")
+    public Result updateExchangeInfo(@PathVariable("sId") Long sId, @PathVariable("exchangeId") Integer exchangeId, @PathVariable("newRoomId") Integer newRoomId) {
+        Result result = null;
+        // student表的修改
+        Student student = new Student();
+        student.setsId(sId);
+        student.setRoomId(newRoomId);
+
+        // 申请表的状态修改
+        Exchange exchange = new Exchange();
+        exchange.setExchangeId(exchangeId);
+        exchange.setState("已处理");
+        try {
+            iStudentService.updateById(student);
+            iExchangeService.updateById(exchange);
+            result = Result.succ(200, "处理成功", null);
+        } catch (Exception e) {
+            result = Result.succ(404, "处理失败", null);
         } finally {
             return result;
         }

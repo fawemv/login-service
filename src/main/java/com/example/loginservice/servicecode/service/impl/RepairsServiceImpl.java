@@ -8,6 +8,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.loginservice.servicecode.service.IRepairsService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * 服务实现类
@@ -18,5 +22,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RepairsServiceImpl extends ServiceImpl<RepairsMapper, Repairs> implements IRepairsService {
+    @Resource
+    RepairsMapper repairsMapper;
 
+    @Override
+    public List<Map<String, Object>> selectRepairsByIdInfo(String studentIdStr) {
+
+
+        return repairsMapper.selectRepairsByIdInfo(studentIdStr);
+    }
 }

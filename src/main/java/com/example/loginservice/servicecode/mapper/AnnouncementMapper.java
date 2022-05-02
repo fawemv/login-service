@@ -23,6 +23,6 @@ public interface AnnouncementMapper extends BaseMapper<Announcement> {
     @Select("select announcement.*,`all`.`name`,`all`.buildingName  from announcement left join " +
             "(select sysuser.`name`,building.`name` as buildingName,building.building_id  from building left join sysuser on building.building_id = sysuser.building_id) as `all` " +
             "on " +
-            "announcement.building_id = `all`.building_id  order by announcement.creat_time desc limit #{lens},4")
+            "announcement.building_id = `all`.building_id  order by announcement.creat_time desc limit #{lens},8")
     List<Map<String, Object>> pageAnnouncementInfo(@Param("lens") Integer lens);
 }

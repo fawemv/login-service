@@ -65,4 +65,11 @@ public class JwtUtils {
         return claims.getExpiration().before(new Date());
     }
 
+    //参数：token   功能： 返回管理员账号或者学生学号
+    public String parseTokenToUsername(String token) {
+        Claims claimByToken = getClaimByToken(token);
+        String username = claimByToken.getSubject();
+        return username;
+    }
+
 }

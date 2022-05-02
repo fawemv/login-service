@@ -44,22 +44,23 @@ class LoginServiceApplicationTests {
                     builder.author("陈浪") // 设置作者
                             .enableSwagger() // 开启 swagger 模式
                             .fileOverride() // 覆盖已生成文件
-                            .outputDir("F:\\毕设代码\\login-service\\src\\main\\java\\com\\example\\loginservice\\servicecode"); // 指定输出目录
+                            //.outputDir("F:\\毕设代码\\login-service\\src\\main\\java\\com\\example\\loginservice\\servicecode"); // 指定输出目录
+                            .outputDir("F:\\毕设代码\\login-service");
                     //.outputDir("F:\\毕设代码"); // 指定输出目录
                 })
                 .packageConfig(builder -> {
-                    builder.parent("") // 设置父包名
+                    builder.parent("test") // 设置父包名
                             .moduleName("") // 设置父包模块名
-                            .pathInfo(Collections.singletonMap(OutputFile.entity, "F:\\毕设代码\\后端\\studentRoom\\login-service\\src\\main\\java\\com\\example\\loginservice\\servicecode\\pojo"))
-                    // .pathInfo(Collections.singletonMap(OutputFile.mapper, "F:\\毕设代码\\login-service\\src\\main\\java\\com\\example\\loginservice\\servicecode\\mapper"))
-                    // .pathInfo(Collections.singletonMap(OutputFile.service, "F:\\毕设代码\\后端\\studentRoom\\login-service\\src\\main\\java\\com\\example\\loginservice\\servicecode\\service"))
-                    // .pathInfo(Collections.singletonMap(OutputFile.serviceImpl, "F:\\毕设代码\\后端\\studentRoom\\login-service\\src\\main\\java\\com\\example\\loginservice\\service\\serviceImpl"))
-                    // .pathInfo(Collections.singletonMap(OutputFile.controller, "F:\\毕设代码\\后端\\studentRoom\\login-service\\src\\main\\java\\com\\example\\loginservice\\servicecode\\controller"))
+                            //  .pathInfo(Collections.singletonMap(OutputFile.entity, "F:\\毕设代码\\后端\\studentRoom\\login-service\\src\\main\\java\\com\\example\\loginservice\\servicecode\\pojo"))
+                            .pathInfo(Collections.singletonMap(OutputFile.mapper, "F:\\毕设代码\\login-service\\src\\main\\java\\com\\example\\loginservice\\servicecode\\mapper"))
+                            .pathInfo(Collections.singletonMap(OutputFile.service, "F:\\毕设代码\\后端\\studentRoom\\login-service\\src\\main\\java\\com\\example\\loginservice\\servicecode\\service"))
+                            .pathInfo(Collections.singletonMap(OutputFile.serviceImpl, "F:\\毕设代码\\后端\\studentRoom\\login-service\\src\\main\\java\\com\\example\\loginservice\\service\\serviceImpl"))
+                            .pathInfo(Collections.singletonMap(OutputFile.controller, "F:\\毕设代码\\后端\\studentRoom\\login-service\\src\\main\\java\\com\\example\\loginservice\\servicecode\\controller"))
                     // 设置mapperXml生成路径
                     ;
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("building") // 设置需要生成的表名
+                    builder.addInclude("exchange") // 设置需要生成的表名
                             .addTablePrefix("u_"); // 设置过滤表前缀
                 })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板

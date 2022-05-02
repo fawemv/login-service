@@ -32,7 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {     // securi
             //"/swagger-ui.html", // swagger的接口文档
             //"/login",
             "/logout",
-            "/user/**"
+            "/user/**",
+            // 配置静态资源过滤
+            "/upload/img/**"
     };
     @Resource
     LoginFailureHandler loginFailureHandler;
