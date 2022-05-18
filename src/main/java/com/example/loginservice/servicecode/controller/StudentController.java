@@ -7,22 +7,50 @@ package com.example.loginservice.servicecode.controller;
  **/
 
 
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.metadata.Font;
+import com.alibaba.excel.metadata.TableStyle;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.loginservice.servicecode.entity.Exchange;
+import com.example.loginservice.servicecode.entity.Repairs;
 import com.example.loginservice.servicecode.entity.Student;
+import com.example.loginservice.servicecode.entity.Sysuser;
+import com.example.loginservice.servicecode.mapper.StudentMapper;
 import com.example.loginservice.servicecode.service.IExchangeService;
 import com.example.loginservice.servicecode.service.IStudentService;
-import com.example.loginservice.utils.JwtUtils;
-import com.example.loginservice.utils.Result;
+import com.example.loginservice.servicecode.service.ISysuserService;
+import com.example.loginservice.utils.*;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
 import javax.management.Query;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.metadata.Table;
+import com.alibaba.excel.EasyExcelFactory;
+
 
 /**
  * @author Lang
@@ -41,6 +69,22 @@ public class StudentController {
     @Resource
     private JwtUtils jwtUtils;
 
+    @Resource
+    private PassWordUtil passWordUtil;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Resource
+    private StudentMapper studentMapper;
+
+    @Resource
+    private ISysuserService iSysuserService;
+
+    //存储需要下载的学生信息数据
+
+    private Map<String, List<Map<String, String>>> map = new HashMap<>();
+
 
     //  获取信息分页 附带模糊查询
     //  在房间页面数据量较大，请求数据时，分页 默认 /1/20/0 ,   这个0考虑到可能是通过房间id前缀模糊查询， 0则代表没有查询条件
@@ -49,9 +93,12 @@ public class StudentController {
     public Result getStudentInfo(@PathVariable("page") Integer page, @PathVariable("pageSize") Integer pageSize) {
         Result result = null;
 
-        Page<Student> pageInfo = new Page<>(page, pageSize);
+       /* Page<Student> pageInfo = new Page<>();
+        iStudentService.page(pageInfo);*/
+        // 分页查询需要宿舍楼的名字和学院的名字
+        //total   records
+        IPage<Student> studentIPage = iStudentService.pageInfo(page, pageSize);
 
-        iStudentService.page(pageInfo);
 
         // 查询有多少条记录,  上面的pageInfo中的total就是呀
         // QueryWrapper<Student> queryWrapper=new QueryWrapper();
@@ -59,8 +106,8 @@ public class StudentController {
         //Integer count = iStudentService.count(queryWrapper);
 
         //3 返回查询的结果
-        if (pageInfo.getRecords().size() != 0)
-            result = Result.succ(200, "查询成功", pageInfo.getRecords(), pageInfo.getTotal());
+        if (studentIPage.getRecords() != null)
+            result = Result.succ(200, "查询成功", studentIPage.getRecords(), studentIPage.getTotal());
         else
             result = Result.succ(200, "暂无数据", null);
 
@@ -76,6 +123,20 @@ public class StudentController {
     public Result updateStudentInfo(@RequestBody Student data) {
         Result result = null;
         //根据id更新
+        // 如果变换的宿舍为null， 则调用, 将宿舍号和床位设置为空
+        if (data.getRoomId() == null) {
+            UpdateWrapper<Student> updateWrapper = new UpdateWrapper<>();
+            updateWrapper
+                    .eq("s_id", data.getsId())
+                    .set("room_id", null)
+                    .set("bed", null);
+            boolean update = iStudentService.update(updateWrapper);
+
+            return Result.succ(200, "修改成功", null);
+
+        }
+
+        // 修改房间号，和床位
         try {
             iStudentService.updateById(data);
             result = Result.succ(200, "修改成功", "");
@@ -108,21 +169,21 @@ public class StudentController {
     //  在房间页面数据量较大，请求数据时，分页 默认,
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/selectStudentInfo/{page}/{pageSize}/{likeData}")
-    public Result selectStudentInfo(@PathVariable("page") Integer page, @PathVariable("pageSize") Integer pageSize, @PathVariable("likeData") Integer likeData) {
+    public Result selectStudentInfo(@PathVariable("page") Integer page, @PathVariable("pageSize") Integer pageSize, @PathVariable("likeData") String likeData) {
         Result result = null;
-        List<Student> data = null;
-        //LambdaQueryWrapper<Student> wrapper = new LambdaQueryWrapper<>();
-//  wrapper.like(StringUtils.isNotBlank(likeData+""), Student::getStudentId, likeData);
+        // Page<Student> objectPage = new Page<>(page, pageSize);
 
-//        2.2 指定排序规则，按照更新时间倒序
-//        wrapper.orderByAsc(Employee::getUpdateTime);
-//        2.3 调用查询方法
-//         iStudentService.page(pageInfo, wrapper);
+        // QueryWrapper<Student> wrapper = Wrappers.query();
+        //   wrapper.likeRight("s_id",likeData);
+        //IPage<Student> data = iStudentService.page(objectPage, wrapper);
 
-/*        if (data != null)
-            result = Result.succ(200, "查询成功", data,aLong);
+        //修改返回的数据，联表查询
+
+        IPage<Student> studentIPage = iStudentService.selectStudentInfo(page, pageSize, likeData);
+        if (studentIPage.getRecords() != null)
+            result = Result.succ(200, "查询成功", studentIPage);
         else
-            result = Result.succ(200, "没有匹配的数据", null);*/
+            result = Result.succ(404, "没有匹配的数据", null);
 
         return result;
     }
@@ -217,17 +278,134 @@ public class StudentController {
         }
     }
 
+    // 导入学生数据的请求
+    // 处理文件上传
+    @PreAuthorize("hasRole('admin')")
+    @PostMapping("/upload")
+    public Result uploadFile(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IllegalStateException, IOException {
+        Result result = null;
+        //检查文件是否为空
+        if (file.isEmpty()) {
+            result = Result.fail("上传文件不能为空");
+            return result;
+        }
+        //检查文件大小  2097152 =2M
+        if (file.getSize() > 2097152 * 50) {
+            result = Result.fail("文件大于100M");
+            return result;
+        }
+        // 将文件交给工具类处理
+        List<Student> excelInfo = null;
+
+        excelInfo = ReadPatientExcelUtil.getExcelInfo(file);
+
+        if (excelInfo == null) {
+            result = Result.fail("文件或文件内容为空！");
+            return result;
+        }
+
+
+        // 错误的数据行数
+        String error = "";
+
+        // 循环添加学生信息
+        for (int i = 0; i < excelInfo.size(); i++) {
+            Student student = excelInfo.get(i);
+            try {
+                iStudentService.save(student);
+            } catch (Exception e) {
+                error += i + 2 + ",";
+            }
+        }
+        if (error != null) {
+            result = Result.fail("部分数据导入失败", error);
+        } else
+            result = Result.succ(200, "导入成功", null);
+
+        return result;
+    }
+
+    // 学生 修改密码
+    @PreAuthorize("hasRole('student')")
+    @PostMapping("/updatePass")
+    public Result updatePass(@RequestBody Map<String, String> map, HttpServletRequest request) {
+        Result result = null;
+        String stuId = jwtUtils.parseTokenToUsername(request.getHeader(jwtUtils.getHeader()));
+        Student byId = iStudentService.getById(stuId);
+        // 验证密码
+        boolean oldpass = bCryptPasswordEncoder.matches(map.get("oldpass"), byId.getPassword());
+
+        if (!oldpass)
+            result = Result.fail("旧密码不正确");
+        else {
+            Student student = new Student();
+            student.setsId(byId.getsId());
+            student.setPassword(bCryptPasswordEncoder.encode(map.get("newpass1")));
+            iStudentService.updateById(student);
+            result = Result.succ(200, "修改成功", null);
+        }
+
+        return result;
+    }
+
+    // getNowStudentInfo
+    // 获取当前登录的学生信息
+    @PreAuthorize("hasRole('student')")
+    @GetMapping("/getNowStudentInfo")
+    public Result getNowStudentInfo(HttpServletRequest request) {
+        Result result = null;
+        String sysId = jwtUtils.parseTokenToUsername(request.getHeader(jwtUtils.getHeader()));
+        Student stu = iStudentService.getNowStudentInfo(sysId);
+        result = Result.succ(200, "查询成功", stu);
+        return result;
+    }
+
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/studentSexCount")
+    public Result studentSexCount() {
+        Result result = null;
+        List<Map<String, Object>> list = iStudentService.studentSexCount();
+        Map<String, Integer> map = new HashMap<>();
+        result = Result.succ(200, "查询成功", list);
+        return result;
+    }
+
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/studentGradeCount")
+    public Result studentGradeCount() {
+        Result result = null;
+        List<Map<String, Object>> list = iStudentService.studentGradeCount();
+        Map<String, Integer> map = new HashMap<>();
+        result = Result.succ(200, "查询成功", list);
+        return result;
+    }
+
+    // 下载学生的信息excel
+    @PreAuthorize("hasRole('admin')")
+    @PostMapping("/studentInfoLoad")
+    public Result studentInfoLoad(@RequestBody List<Map<String, String>> data) throws Exception {
+
+        // 文件输出位置
+        String fileName = UUID.randomUUID().toString();
+        map.put(fileName, data);
+        return Result.succ(fileName);
+    }
+
+
+    @GetMapping("/studentInfoLoad2/{fileName}")
+    public void studentInfoLoad2(@PathVariable("fileName") String fileName, HttpServletResponse response) throws ServletException, IOException {
+
+
+        List<Map<String, String>> data = map.remove(fileName);
+        // 生成excel文件
+        HSSFWorkbook workbook = iStudentService.exportStudent(data);
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("学生信息表.xls", "UTF-8"));
+
+        workbook.write(response.getOutputStream());
+
+    }
+
+
 }
-
-
-/**
- * 模糊查询代码
- **/
-//LambdaQueryWrapper<Student> wrapper = new LambdaQueryWrapper<>();
-//  wrapper.like(StringUtils.isNotBlank(likeData+""), Student::getStudentId, likeData);
-
-//        2.2 指定排序规则，按照更新时间倒序
-//        wrapper.orderByAsc(Employee::getUpdateTime);
-//        2.3 调用查询方法
-//         iStudentService.page(pageInfo, wrapper);
 

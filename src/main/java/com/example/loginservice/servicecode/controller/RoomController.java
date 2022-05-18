@@ -1,20 +1,26 @@
 package com.example.loginservice.servicecode.controller;
 
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.extension.api.R;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.loginservice.exception.Const;
 import com.example.loginservice.servicecode.entity.Room;
+import com.example.loginservice.servicecode.entity.Student;
+import com.example.loginservice.servicecode.mapper.StudentMapper;
 import com.example.loginservice.servicecode.service.IRoomService;
+import com.example.loginservice.servicecode.service.IStudentService;
 import com.example.loginservice.utils.Result;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Lang
@@ -27,6 +33,12 @@ public class RoomController {
     @Resource
     private IRoomService iRoomService;
 
+    @Resource
+    private IStudentService iStudentService;
+
+    @Resource
+    private StudentMapper studentMapper;
+
 
     //  获取房间信息分页 附带模糊查询
     //  在房间页面数据量较大，请求数据时，分页 默认 /1/20/0 ,   这个0考虑到可能是通过房间id前缀模糊查询， 0则代表没有查询条件
@@ -37,16 +49,14 @@ public class RoomController {
 
         Page<Room> pageInfo = new Page<>(page, pageSize);
 
-        iRoomService.page(pageInfo);
+        // iRoomService.page(pageInfo);
+        IPage<Room> roomInfo = iRoomService.getRoomInfo(pageInfo);
 
-        // 查询有多少条记录,  上面的pageInfo中的total就是呀
-        // QueryWrapper<Room> queryWrapper=new QueryWrapper();
-        //queryWrapper.gt("salary",3500).like("name","小");
-        //Integer count = iRoomService.count(queryWrapper);
+        //
 
         //3 返回查询的结果
-        if (pageInfo.getRecords().size() != 0)
-            result = Result.succ(200, "查询成功", pageInfo.getRecords(), pageInfo.getTotal());
+        if (roomInfo.getRecords().size() != 0)
+            result = Result.succ(200, "查询成功", roomInfo.getRecords(), roomInfo.getTotal());
         else
             result = Result.succ(200, "暂无数据", null);
 
@@ -96,18 +106,14 @@ public class RoomController {
     @GetMapping("/selectRoomInfo/{page}/{pageSize}/{likeData}")
     public Result selectRoomInfo(@PathVariable("page") Integer page, @PathVariable("pageSize") Integer pageSize, @PathVariable("likeData") Integer likeData) {
         Result result = null;
-        List<Room> data = null;
+        IPage<Room> data = null;
         try {
             data = iRoomService.selectRoomInfo(page, pageSize, likeData);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // 查询一共有多少条数据满足
-        Long aLong = iRoomService.selectRoomInfoSize(likeData);
-
-        if (data != null)
-            result = Result.succ(200, "查询成功", data, aLong);
+        if (data.getRecords() != null)
+            result = Result.succ(200, "查询成功", data, data.getTotal());
         else
             result = Result.succ(200, "没有匹配的数据", null);
 
@@ -144,6 +150,68 @@ public class RoomController {
 
         return result;
     }
+
+    // 床位分配
+    @PreAuthorize("hasRole('admin')")
+    @PostMapping("/allotBed")
+    public Result allotBed(@RequestBody List<Room> data) {
+        Result result = null;
+        List<String> errors = new ArrayList<>();
+        data.stream()
+                .forEach(room -> {
+                            // 查询每个房间的学生的学生，将学生的床位数据初始化
+                            QueryWrapper<Student> wrapper = Wrappers.query();
+
+                            wrapper.eq("room_id", room.getRoomId());
+                            List<Student> students = studentMapper.selectList(wrapper);
+
+                            if (students.size() != 0 && students.size() <= room.getRoomType()) {
+                                for (int i = 0; i < students.size(); i++) {
+                                    Student student = students.get(i);
+                                    Student temp = new Student();
+                                    temp.setsId(student.getsId());
+                                    temp.setBed(i + 1);
+                                    // 修改床位信息
+                                    iStudentService.updateById(temp);
+                                }
+                            } else if (students.size() > room.getRoomType()) {
+                                // 如果是入住人数超过了寝室容量
+                                errors.add(room.getRoomId() + "宿舍入住的学生人数超过了房间人数，床位分配失败\n");
+                            }
+
+                        }
+                );
+        if (errors.size() == 0) {
+            result = Result.succ(200, "分配成功", null);
+        } else {
+            // result = Result.fail("部分房间分配失败","cuowu ");
+            result = Result.succ(200, "部分房间分配失败", errors);
+        }
+
+        return result;
+    }
+
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/roomCount/{buildingId}")
+    public Result roomCount(@PathVariable("buildingId") Integer buildingId) {
+        Result result = null;
+        try {
+            // 已使用的房间
+            Integer yesRoomCount = iRoomService.getYesRoomCount(buildingId);
+            // 未使用的房间
+            Integer noRoomCount = iRoomService.getNoRoomCount(buildingId);
+            HashMap<String, Integer> map = new HashMap<>();
+            map.put("yesRoomCount", yesRoomCount);
+            map.put("noRoomCount", noRoomCount);
+            result = Result.succ(200, "查询成功", map);
+        } catch (Exception e) {
+            result = Result.succ(404, "查询失败", null);
+        } finally {
+            return result;
+        }
+    }
+
+
 }
 
 

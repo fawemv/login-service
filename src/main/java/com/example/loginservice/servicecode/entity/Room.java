@@ -2,9 +2,11 @@ package com.example.loginservice.servicecode.entity;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * <p>
@@ -14,6 +16,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author 陈浪
  * @since 2022-04-14
  */
+@Data
 @ApiModel(value = "Room对象", description = "")
 public class Room implements Serializable {
 
@@ -31,42 +34,12 @@ public class Room implements Serializable {
     @ApiModelProperty("入住几人的")
     private Integer roomType;
 
-    public Integer getRoomId() {
-        return roomId;
-    }
+    // 宿舍楼的名字
+    @TableField(exist = false)
+    private String buildingName;
+    // 异常情况： 已入住人数大于可入住人数
+    @TableField(exist = false)
+    private String roomState;
 
-    public void setRoomId(Integer roomId) {
-        this.roomId = roomId;
-    }
-    public Integer getBuildingId() {
-        return buildingId;
-    }
 
-    public void setBuildingId(Integer buildingId) {
-        this.buildingId = buildingId;
-    }
-    public Integer getOccupancy() {
-        return occupancy;
-    }
-
-    public void setOccupancy(Integer occupancy) {
-        this.occupancy = occupancy;
-    }
-    public Integer getRoomType() {
-        return roomType;
-    }
-
-    public void setRoomType(Integer roomType) {
-        this.roomType = roomType;
-    }
-
-    @Override
-    public String toString() {
-        return "Room{" +
-                "roomId=" + roomId +
-                ", buildingId=" + buildingId +
-                ", occupancy=" + occupancy +
-                ", roomType=" + roomType +
-                "}";
-    }
 }

@@ -52,9 +52,9 @@ public class RepairsController {
         Result result = null;
         try {
             iRepairsService.save(data);
-            result = Result.succ(200, "添加成功", null);
+            result = Result.succ(200, "申请成功", null);
         } catch (Exception e) {
-            result = Result.succ(404, "添加失败", null);
+            result = Result.succ(404, "申请失败", null);
         } finally {
             return result;
         }

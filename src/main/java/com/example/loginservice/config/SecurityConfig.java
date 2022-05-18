@@ -34,7 +34,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {     // securi
             "/logout",
             "/user/**",
             // 配置静态资源过滤
-            "/upload/img/**"
+            "/upload/img/**",
+            "/student/studentInfoLoad2/*"
+
     };
     @Resource
     LoginFailureHandler loginFailureHandler;

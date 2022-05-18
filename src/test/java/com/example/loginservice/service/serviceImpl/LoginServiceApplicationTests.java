@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.example.loginservice.servicecode.entity.Student;
 import com.example.loginservice.servicecode.service.IStudentService;
+import com.example.loginservice.utils.PassWordUtil;
 import com.example.loginservice.utils.RedisUtil;
+import com.example.loginservice.utils.Result;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -84,6 +86,17 @@ class LoginServiceApplicationTests {
 
         //iStudentService.removeById(new Long(1806034111));
         redisUtil.set("name", "陈浪");
+    }
+
+    @Resource
+    private PassWordUtil passWordUtil;
+
+    // 测试密码加密
+    @Test
+    public void test8() {
+        // Result xx = passWordUtil.encrypt("111111");
+
+        return;
     }
 
 }

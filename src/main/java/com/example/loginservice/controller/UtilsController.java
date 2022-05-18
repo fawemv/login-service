@@ -1,16 +1,11 @@
 package com.example.loginservice.controller;
 
-import cn.hutool.core.lang.hash.Hash;
 import cn.hutool.core.map.MapUtil;
 import com.example.loginservice.utils.JwtUtils;
 import com.example.loginservice.utils.RedisUtil;
 import com.example.loginservice.utils.Result;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -131,4 +126,15 @@ public class UtilsController {
         result = Result.succ(200, "上传成功", "http://localhost:8081/upload/img/" + fileName);
         return result;
     }
+
+    //获取登录人的用户名
+    @GetMapping("/getUserName")
+    public Result getUserName(HttpServletRequest request) {
+
+        String username = jwtUtils.parseTokenToUsername(request.getHeader(jwtUtils.getHeader()));
+
+        return Result.succ(username);
+    }
+
+
 }

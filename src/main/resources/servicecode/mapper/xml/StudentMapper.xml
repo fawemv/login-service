@@ -4,15 +4,19 @@
 
     <select id="selectYesRegisterInfo" resultType="com.example.loginservice.servicecode.entity.Student"
             parameterType="string">
-        select * from student where is_delete = 0 and room_id is not null
+        select stu.s_id,stu.sex,stu.room_id,stu.`name`,stu.institute_id,stu.grade,stu.bed,ins.institute_name from
+        student as stu left join institute as ins on
+        stu.institute_id = ins.institute_id where stu.is_delete = 0 and room_id is not null
         <if test="likeData != null">
-            and s_id like #{likeData}
+            and stu.s_id like #{likeData}
         </if>
     </select>
 
     <select id="selectNoRegisterInfo" resultType="com.example.loginservice.servicecode.entity.Student"
             parameterType="string">
-        select * from student where is_delete = 0 and room_id is null
+        select stu.s_id,stu.sex,stu.room_id,stu.`name`,stu.institute_id,stu.grade,stu.bed,ins.institute_name from
+        student as stu left join institute as ins on
+        stu.institute_id = ins.institute_id where is_delete = 0 and room_id is null
         <if test="likeData != null">
             and s_id like #{likeData}
         </if>

@@ -91,9 +91,9 @@ public class AnnouncementController {
         data.setSysId(sysUser.getId());
         try {
             iAnnouncementService.save(data);
-            result = Result.succ(200, "添加成功", null);
+            result = Result.succ(200, "发布成功", null);
         } catch (Exception e) {
-            result = Result.succ(404, "添加失败", null);
+            result = Result.succ(404, "发布失败", null);
         } finally {
             return result;
         }
@@ -114,6 +114,13 @@ public class AnnouncementController {
         } finally {
             return result;
         }
+    }
+
+    // 获取一条最新的数据
+    @GetMapping("/getAnnonOne")
+    public Result getAnnonOne() {
+        List<Map<String, Object>> list = iAnnouncementService.pageAnnouncementInfo(0);
+        return Result.succ(list.get(0));
     }
 
 }

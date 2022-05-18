@@ -2,6 +2,7 @@ package com.example.loginservice.servicecode.entity;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.swagger.annotations.ApiModel;
@@ -48,8 +49,15 @@ public class Student implements Serializable {
     @ApiModelProperty("逻辑删除字段")
     @TableLogic
     private Integer isDelete;
-    @ApiModelProperty("专业id")
-    private Integer specialtyId;
+
+
+    // 学院的名字
+    @TableField(exist = false)
+    private String instituteName;
+    // 宿舍楼的名字
+    @TableField(exist = false)
+    private String buildingName;
+
 
     public Long getsId() {
         return this.sId;

@@ -100,34 +100,58 @@ public class ReadPatientExcelUtil {
             if (row == null) {
                 continue;
             }
-            Student user = new Student();
+            Student student = new Student();
             // 循环Excel的列
             for (int c = 0; c < totalCells - 1; c++) {
                 Cell cell = row.getCell(c);
                 if (null != cell) {
+                    // 设置密码
+
                     if (c == 0) {           //第一列
                         //如果是纯数字,将单元格类型转为String
                         if (cell.getCellTypeEnum() == CellType.NUMERIC) {
                             cell.setCellType(CellType.STRING);
                         }
-                        // user.setPatientName(cell.getStringCellValue());//将单元格数据赋值给user
+                        // 学号
+                        student.setsId(Long.parseLong(cell.getStringCellValue()));
                     } else if (c == 1) {
                         if (cell.getCellTypeEnum() == CellType.NUMERIC) {
                             cell.setCellType(CellType.STRING);
                         }
-                        // user.setPatientIdentity(cell.getStringCellValue());
+                        // 姓名
+                        student.setName(cell.getStringCellValue());
                     } else if (c == 2) {
                         if (cell.getCellTypeEnum() == CellType.NUMERIC) {
                             cell.setCellType(CellType.STRING);
                         }
-                        String stringCellValue = cell.getStringCellValue();
-                        //  user.setHealingId(stringCellValue);
+                        //性别
+                        student.setSex(cell.getStringCellValue());
                     } else if (c == 3) {
                         if (cell.getCellTypeEnum() == CellType.NUMERIC) {
                             cell.setCellType(CellType.STRING);
                         }
-                        // user.setElseInfo(String.valueOf(cell.getStringCellValue()));
+                        // 年级
+                        student.setGrade(Integer.parseInt(cell.getStringCellValue()));
+                    } else if (c == 4) {
+                        if (cell.getCellTypeEnum() == CellType.NUMERIC) {
+                            cell.setCellType(CellType.STRING);
+                        }
+                        // 学院
+                        student.setInstituteId(Integer.parseInt(cell.getStringCellValue()));
+                    } else if (c == 5) {
+                        if (cell.getCellTypeEnum() == CellType.NUMERIC) {
+                            cell.setCellType(CellType.STRING);
+                        }
+                        // 宿舍号
+                        student.setRoomId(Integer.parseInt(cell.getStringCellValue()));
+                    } else if (c == 6) {
+                        if (cell.getCellTypeEnum() == CellType.NUMERIC) {
+                            cell.setCellType(CellType.STRING);
+                        }
+                        // 床位
+                        student.setBed(Integer.parseInt(cell.getStringCellValue()));
                     }
+
                 }
             }
             //将excel解析出来的数据赋值给对象添加到list中
@@ -138,7 +162,7 @@ public class ReadPatientExcelUtil {
             // user.setCreateId(2L);
             //user.setCreateTime(LocalDateTime.now());
             // 添加到list
-            userList.add(user);
+            userList.add(student);
         }
         return userList;
     }
