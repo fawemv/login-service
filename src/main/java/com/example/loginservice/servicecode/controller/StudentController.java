@@ -134,7 +134,16 @@ public class StudentController {
 
             return Result.succ(200, "修改成功", null);
 
+        }else if (data.getRoomId() != null && data.getBed() == null) {
+            UpdateWrapper<Student> updateWrapper = new UpdateWrapper<>();
+            updateWrapper
+                    .eq("s_id", data.getsId())
+                    .set("bed", null);
+            boolean update = iStudentService.update(updateWrapper);
+
+            return Result.succ(200, "修改成功", null);
         }
+
 
         // 修改房间号，和床位
         try {
@@ -403,7 +412,17 @@ public class StudentController {
         response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("学生信息表.xls", "UTF-8"));
 
         workbook.write(response.getOutputStream());
+    }
 
+
+    // 统计图表统计每个学院的学生人数
+    //
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/studentInstituteCount")
+    public Result studentInstituteCount() {
+        List<Map<String, Object>> list = iStudentService.studentInstituteCount();
+
+        return Result.succ(list);
     }
 
 

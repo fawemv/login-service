@@ -44,6 +44,14 @@ public class Repairs implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
+    @TableField(exist = false)
+    private String studentName;
+
+    @TableField(exist = false)
+    private String buildingName;
+
+    @TableField(exist = false)
+    private String roomId;
 
     public void setsId(Long sId) {
         this.sId = sId;

@@ -62,4 +62,8 @@ public interface StudentMapper extends BaseMapper<Student> {
     List<Map<String, Object>> studentGradeCount();
 
 
+    @Select("SELECT ins.institute_name as instituteName,count(*) as num FROM institute as ins right join student on ins.institute_id = student.institute_id GROUP BY ins.institute_name")
+    List<Map<String,Object>> studentInstituteCount();
+
+
 }

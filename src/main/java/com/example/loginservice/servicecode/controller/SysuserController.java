@@ -9,6 +9,7 @@ import com.example.loginservice.servicecode.service.ISysuserService;
 import com.example.loginservice.utils.JwtUtils;
 import com.example.loginservice.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -74,6 +75,49 @@ public class SysuserController {
 
         return Result.succ(200, "查询成功", sysusers);
     }
+
+    //
+    @PreAuthorize("hasRole('admin')")
+    @PostMapping("/addAdmin")
+    public Result addAdmin(@RequestBody Sysuser sysuser) {
+
+        boolean save = false;
+        try {
+            save = iSysuserService.save(sysuser);
+        } catch (Exception e) {
+            return Result.succ(400,"添加失败,宿舍楼号错误",null);
+        }
+        if (save == true){
+            return Result.succ(200,"添加成功",null);
+        }else {
+            return Result.succ(400,"添加失败",null);
+        }
+
+    }
+
+    @PreAuthorize("hasRole('admin')")
+    @PostMapping("/updateAdmin")
+    public Result updateAdmin(@RequestBody Sysuser sysuser) {
+        boolean save = false;
+        try {
+            save = iSysuserService.updateById(sysuser);
+        } catch (Exception e) {
+            return Result.succ(400,"修改失败,宿舍楼号错误",null);
+        }
+        if (save == true){
+            return Result.succ(200,"修改成功",null);
+        }else {
+            return Result.succ(400,"修改失败",null);
+        }
+
+    }
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/deleteSysuser/{id}")
+    public Result deleteSysuser(@PathVariable("id") Long id){
+        iSysuserService.removeById(id);
+        return Result.succ(200,"删除成功",null);
+    }
+
 
 
 }

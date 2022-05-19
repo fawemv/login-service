@@ -18,6 +18,7 @@ import java.util.Map;
 public interface IRepairsService extends IService<Repairs> {
 
     List<Map<String, Object>> selectRepairsByIdInfo(String studentIdStr);
+    List<Repairs> getInitData();
 
 
 }

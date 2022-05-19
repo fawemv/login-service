@@ -155,4 +155,10 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         }
         return workbook;
     }
+
+    @Override
+    public List<Map<String, Object>> studentInstituteCount() {
+
+        return studentMapper.studentInstituteCount();
+    }
 }

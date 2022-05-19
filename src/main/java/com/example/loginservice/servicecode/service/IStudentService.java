@@ -40,4 +40,6 @@ public interface IStudentService extends IService<Student> {
     // 生成excel表格
     HSSFWorkbook exportStudent(List<Map<String, String>> data);
 
+    List<Map<String,Object>> studentInstituteCount();
+
 }

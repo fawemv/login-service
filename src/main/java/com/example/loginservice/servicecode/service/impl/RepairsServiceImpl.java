@@ -31,4 +31,10 @@ public class RepairsServiceImpl extends ServiceImpl<RepairsMapper, Repairs> impl
 
         return repairsMapper.selectRepairsByIdInfo(studentIdStr);
     }
+
+    @Override
+    public List<Repairs> getInitData() {
+
+        return  repairsMapper.getInitData();
+    }
 }

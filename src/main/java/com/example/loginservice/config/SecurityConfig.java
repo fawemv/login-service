@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {     // securi
             "/user/**",
             // 配置静态资源过滤
             "/upload/img/**",
+            "/repairs/repairsInfoLoad2/*",
             "/student/studentInfoLoad2/*"
 
     };
